@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
+
+require "pulsar/client"
+
+service_url = ARGV.first
+
+client = Pulsar::Client.new(service_url)
+producer = client.create_producer('example-topic')
+while data = gets
+  data.chomp!
+  break if data == "exit"
+  producer.send(data)
+end
+producer.send("exit")
+client.close

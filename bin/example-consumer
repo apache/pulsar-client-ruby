@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
+
+require "pulsar/client"
+
+service_url = ARGV.first
+
+client = Pulsar::Client.new(service_url)
+consumer = client.subscribe('example-topic', 'example-consumer')
+loop do
+  msg = consumer.receive
+  begin
+    puts "Received message '#{msg.data}' id='#{msg.message_id}'"
+    consumer.acknowledge(msg)
+  rescue => e
+    puts "Error acknowledging message #{e}"
+    consumer.negative_acknowledge(msg)
+  end
+  break if msg.data == "exit"
+end
+client.close
