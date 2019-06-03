@@ -23,8 +23,9 @@ require 'pulsar/producer'
 
 module Pulsar
   class Client
-    def self.test
-      puts self.new.hello
+    def create_producer(topic, config=nil)
+      config ||= Pulsar::ProducerConfiguration.new
+      _create_producer(topic, config)
     end
   end
 end

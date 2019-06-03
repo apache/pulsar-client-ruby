@@ -15,7 +15,7 @@ namespace pulsar_rb {
     pulsar::Client _client;
     Client(Rice::String service_url);
 
-    Producer::ptr create_producer(Rice::String topic);
+    Producer::ptr create_producer(Rice::String topic, const ProducerConfiguration& config);
     Consumer::ptr subscribe(Rice::String topic, Rice::String subscriptionName);
     void close();
 

@@ -14,7 +14,7 @@ Client::Client(Rice::String service_url) : _client(service_url.str()) {
 typedef struct {
   pulsar::Client& client;
   const Rice::String& topic;
-  pulsar::ProducerConfiguration& config;
+  const pulsar::ProducerConfiguration& config;
   pulsar::Producer producer;
   pulsar::Result result;
 } client_create_producer_task;
@@ -25,8 +25,7 @@ void* client_create_producer_worker(void* taskPtr) {
   return nullptr;
 }
 
-Producer::ptr Client::create_producer(Rice::String topic) {
-  pulsar::ProducerConfiguration config; // TODO allow providing as argument
+Producer::ptr Client::create_producer(Rice::String topic, const ProducerConfiguration& config) {
   client_create_producer_task task = { _client, topic, config };
   rb_thread_call_without_gvl(&client_create_producer_worker, &task, RUBY_UBF_IO, nullptr);
   CheckResult(task.result);
@@ -78,10 +77,10 @@ void Client::close() {
 using namespace Rice;
 
 void bind_client(Module& module) {
-    define_class_under<pulsar_rb::Client>(module, "Client")
-      .define_constructor(Constructor<pulsar_rb::Client, const std::string&>())
-      .define_method("create_producer", &pulsar_rb::Client::create_producer)
-      .define_method("subscribe", &pulsar_rb::Client::subscribe)
-      .define_method("close", &pulsar_rb::Client::close)
-      ;
+  define_class_under<pulsar_rb::Client>(module, "Client")
+    .define_constructor(Constructor<pulsar_rb::Client, const std::string&>())
+    .define_method("_create_producer", &pulsar_rb::Client::create_producer)
+    .define_method("subscribe", &pulsar_rb::Client::subscribe)
+    .define_method("close", &pulsar_rb::Client::close)
+    ;
 }
