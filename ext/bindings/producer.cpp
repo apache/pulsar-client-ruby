@@ -10,7 +10,7 @@ namespace pulsar_rb {
 
 typedef struct {
   pulsar::Producer& producer;
-  pulsar::Message& message;
+  const pulsar::Message& message;
   pulsar::Result result;
 } producer_send_task;
 
@@ -20,12 +20,8 @@ void* producer_send_worker(void* taskPtr) {
   return nullptr;
 }
 
-void Producer::send(const std::string& data /* TODO should be Message::ptr message */) {
-  /* TODO should be: auto _msg = message->_msg; */
-  pulsar::MessageBuilder mb;
-  mb.setContent(data);
-  auto _msg = mb.build();
-  producer_send_task task = { _producer, _msg };
+void Producer::send(const Message& message) {
+  producer_send_task task = { _producer, message._msg };
   rb_thread_call_without_gvl(&producer_send_worker, &task, RUBY_UBF_IO, nullptr);
   CheckResult(task.result);
 }
@@ -37,6 +33,6 @@ using namespace Rice;
 void bind_producer(Module& module) {
   define_class_under<pulsar_rb::Producer>(module, "Producer")
     .define_constructor(Constructor<pulsar_rb::Producer>())
-    .define_method("send", &pulsar_rb::Producer::send)
+    .define_method("_send", &pulsar_rb::Producer::send)
     ;
 }

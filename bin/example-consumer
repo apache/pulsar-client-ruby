@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-service_url = ARGV.first
+service_url = ARGV.shift
 
 client = Pulsar::Client.new(service_url)
 consumer = client.subscribe('example-topic', 'example-consumer')

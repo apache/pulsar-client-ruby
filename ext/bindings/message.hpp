@@ -21,6 +21,7 @@ namespace pulsar_rb {
   public:
     pulsar::Message _msg;
     Message(const pulsar::Message& msg) : _msg(msg) {};
+    Message(const std::string& data);
 
     Rice::String getData();
     MessageId::ptr getMessageId();

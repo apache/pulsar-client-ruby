@@ -17,14 +17,15 @@
 # under the License.
 #
 
-require 'pulsar/client/version'
 require 'pulsar/bindings'
-require 'pulsar/producer'
 
 module Pulsar
-  class Client
-    def self.test
-      puts self.new.hello
+  class Producer
+    def send(message)
+      unless message.is_a?(Pulsar::Message)
+        message = Pulsar::Message.new(message)
+      end
+      _send(message)
     end
   end
 end

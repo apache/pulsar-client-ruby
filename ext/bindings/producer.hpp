@@ -14,7 +14,7 @@ namespace pulsar_rb {
     Producer() {};
     Producer(const pulsar::Producer& producer) : _producer(producer) {}
 
-    void send(const std::string& data /* TODO should be Message::ptr message */);
+    void send(const Message& message);
 
     typedef Rice::Data_Object<Producer> ptr;
   };

@@ -12,6 +12,12 @@ Rice::String MessageId::toString() {
   return Rice::String(ss.str());
 }
 
+Message::Message(const std::string& data) {
+  pulsar::MessageBuilder mb;
+  mb.setContent(data);
+  _msg = mb.build();
+}
+
 Rice::String Message::getData() {
   std::string str((const char*)_msg.getData(), _msg.getLength());
   return Rice::String(str);
@@ -34,6 +40,7 @@ void bind_message(Module& module) {
 
   define_class_under<pulsar_rb::Message>(module, "Message")
     .define_constructor(Constructor<pulsar_rb::Message, const pulsar::Message&>())
+    .define_constructor(Constructor<pulsar_rb::Message, const std::string&>())
     .define_method("data", &pulsar_rb::Message::getData)
     .define_method("message_id", &pulsar_rb::Message::getMessageId)
     ;
