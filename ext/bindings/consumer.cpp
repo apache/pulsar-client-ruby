@@ -38,7 +38,7 @@ void Consumer::acknowledge(const Message& message) {
 
 void Consumer::negative_acknowledge(const Message& message) {
   // error: no member named 'negativeAcknowledge' in 'pulsar::Consumer'
-  // TODO maybe my libpulsar is older than the source I was looking at?
+  // this is not yet available in libpulsar v2.3.2
   //_consumer.negativeAcknowledge(message._msg);
 }
 
@@ -51,7 +51,7 @@ void bind_consumer(Module &module) {
     .define_constructor(Constructor<pulsar_rb::Consumer>())
     .define_method("receive", &pulsar_rb::Consumer::receive)
     .define_method("acknowledge", &pulsar_rb::Consumer::acknowledge)
-    .define_method("negative_acknowledge", &pulsar_rb::Consumer::negative_acknowledge)
+    //.define_method("negative_acknowledge", &pulsar_rb::Consumer::negative_acknowledge)
     ;
 
   define_class_under<pulsar_rb::ConsumerConfiguration>(module, "ConsumerConfiguration")
