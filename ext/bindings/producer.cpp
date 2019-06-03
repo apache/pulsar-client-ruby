@@ -33,7 +33,7 @@ using namespace Rice;
 void bind_producer(Module& module) {
   define_class_under<pulsar_rb::Producer>(module, "Producer")
     .define_constructor(Constructor<pulsar_rb::Producer>())
-    .define_method("_send", &pulsar_rb::Producer::send)
+    .define_method("send", &pulsar_rb::Producer::send)
     ;
 
   define_class_under<pulsar_rb::ProducerConfiguration>(module, "ProducerConfiguration")

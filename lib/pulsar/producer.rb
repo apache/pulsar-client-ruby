@@ -21,11 +21,15 @@ require 'pulsar/bindings'
 
 module Pulsar
   class Producer
-    def send(message)
-      unless message.is_a?(Pulsar::Message)
-        message = Pulsar::Message.new(message)
+    module RubySideTweaks
+      def send(message)
+        unless message.is_a?(Pulsar::Message)
+          message = Pulsar::Message.new(message)
+        end
+        super(message)
       end
-      _send(message)
     end
+
+    prepend RubySideTweaks
   end
 end

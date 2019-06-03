@@ -8,7 +8,7 @@
 
 namespace pulsar_rb {
 
-Client::Client(Rice::String service_url) : _client(service_url.str()) {
+Client::Client(Rice::String service_url, const ClientConfiguration& config) : _client(service_url.str(), config) {
 }
 
 typedef struct {
@@ -36,7 +36,7 @@ typedef struct {
   pulsar::Client& client;
   const Rice::String& topic;
   const Rice::String& subscriptionName;
-  pulsar::ConsumerConfiguration& config;
+  const pulsar::ConsumerConfiguration& config;
   pulsar::Consumer consumer;
   pulsar::Result result;
 } client_subscribe_task;
@@ -47,8 +47,7 @@ void* client_subscribe_worker(void* taskPtr) {
   return nullptr;
 }
 
-Consumer::ptr Client::subscribe(Rice::String topic, Rice::String subscriptionName) {
-  pulsar::ConsumerConfiguration config; // TODO allow providing as argument
+Consumer::ptr Client::subscribe(Rice::String topic, Rice::String subscriptionName, const ConsumerConfiguration& config) {
   client_subscribe_task task = { _client, topic, subscriptionName, config };
   rb_thread_call_without_gvl(&client_subscribe_worker, &task, RUBY_UBF_IO, nullptr);
   CheckResult(task.result);
@@ -78,9 +77,32 @@ using namespace Rice;
 
 void bind_client(Module& module) {
   define_class_under<pulsar_rb::Client>(module, "Client")
-    .define_constructor(Constructor<pulsar_rb::Client, const std::string&>())
-    .define_method("_create_producer", &pulsar_rb::Client::create_producer)
+    .define_constructor(Constructor<pulsar_rb::Client, const std::string&, const pulsar_rb::ClientConfiguration&>())
+    .define_method("create_producer", &pulsar_rb::Client::create_producer)
     .define_method("subscribe", &pulsar_rb::Client::subscribe)
     .define_method("close", &pulsar_rb::Client::close)
+    ;
+
+  define_class_under<pulsar_rb::ClientConfiguration>(module, "ClientConfiguration")
+    .define_constructor(Constructor<pulsar_rb::ClientConfiguration>())
+    // TODO .define_method("authentication=", &ClientConfiguration_setAuthentication)
+    .define_method("operation_timeout_seconds", &ClientConfiguration::getOperationTimeoutSeconds)
+    .define_method("operation_timeout_seconds=", &ClientConfiguration::setOperationTimeoutSeconds)
+    .define_method("io_threads", &ClientConfiguration::getIOThreads)
+    .define_method("io_threads=", &ClientConfiguration::setIOThreads)
+    .define_method("message_listener_threads", &ClientConfiguration::getMessageListenerThreads)
+    .define_method("message_listener_threads=", &ClientConfiguration::setMessageListenerThreads)
+    .define_method("concurrent_lookup_requests", &ClientConfiguration::getConcurrentLookupRequest)
+    .define_method("concurrent_lookup_requests=", &ClientConfiguration::setConcurrentLookupRequest)
+    .define_method("log_conf_file_path", &ClientConfiguration::getLogConfFilePath)
+    .define_method("log_conf_file_path=", &ClientConfiguration::setLogConfFilePath)
+    .define_method("use_tls?", &ClientConfiguration::isUseTls)
+    .define_method("use_tls=", &ClientConfiguration::setUseTls)
+    .define_method("tls_trust_certs_file_path", &ClientConfiguration::getTlsTrustCertsFilePath)
+    .define_method("tls_trust_certs_file_path=", &ClientConfiguration::setTlsTrustCertsFilePath)
+    .define_method("tls_allow_insecure_connection?", &ClientConfiguration::isTlsAllowInsecureConnection)
+    .define_method("tls_allow_insecure_connection=", &ClientConfiguration::setTlsAllowInsecureConnection)
+    .define_method("tls_validate_hostname?", &ClientConfiguration::isValidateHostName)
+    .define_method("tls_validate_hostname=", &ClientConfiguration::setValidateHostName)
     ;
 }

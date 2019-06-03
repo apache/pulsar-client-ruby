@@ -23,9 +23,23 @@ require 'pulsar/producer'
 
 module Pulsar
   class Client
-    def create_producer(topic, config=nil)
-      config ||= Pulsar::ProducerConfiguration.new
-      _create_producer(topic, config)
+    module RubySideTweaks
+      def initialize(service_url, config=nil)
+        config ||= Pulsar::ClientConfiguration.new
+        super(service_url, config)
+      end
+
+      def create_producer(topic, config=nil)
+        config ||= Pulsar::ProducerConfiguration.new
+        super(topic, config)
+      end
+
+      def subscribe(topic, subscription_name, config=nil)
+        config ||= Pulsar::ConsumerConfiguration.new
+        super(topic, subscription_name, config)
+      end
     end
+
+    prepend RubySideTweaks
   end
 end

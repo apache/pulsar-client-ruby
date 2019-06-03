@@ -20,6 +20,10 @@ namespace pulsar_rb {
 
     typedef Rice::Data_Object<Consumer> ptr;
   };
+
+  // direct typedef instead of wrapping because implementations don't need any
+  // wrapping. but still re-namespaced for consistency
+  typedef pulsar::ConsumerConfiguration ConsumerConfiguration;
 };
 
 void bind_consumer(Rice::Module& module);
