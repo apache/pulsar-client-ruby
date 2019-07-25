@@ -17,30 +17,16 @@
 # under the License.
 #
 
-require 'pulsar/client/version'
 require 'pulsar/bindings'
-require 'pulsar/consumer'
-require 'pulsar/producer'
 
 module Pulsar
-  class Client
-    module RubySideTweaks
-      def initialize(service_url, config=nil)
-        config ||= Pulsar::ClientConfiguration.new
-        super(service_url, config)
-      end
-
-      def create_producer(topic, config=nil)
-        config ||= Pulsar::ProducerConfiguration.new
-        super(topic, config)
-      end
-
-      def subscribe(topic, subscription_name, config=nil)
-        config ||= Pulsar::ConsumerConfiguration.new
-        super(topic, subscription_name, config)
+  class Consumer
+    def listen(message)
+      loop do
+        msg = receive
+        yield msg.data
+        acknowledge(msg)
       end
     end
-
-    prepend RubySideTweaks
   end
 end
