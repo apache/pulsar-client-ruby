@@ -8,7 +8,86 @@
 
 namespace pulsar_rb {
 
-Client::Client(Rice::String service_url, const ClientConfiguration& config) : _client(service_url.str(), config) {
+ClientConfiguration::ClientConfiguration() : _config() {
+}
+
+void ClientConfiguration::setAuthFromToken(const std::string &token) {
+  _config.setAuth(pulsar::AuthToken::createWithToken(token));
+}
+
+int ClientConfiguration::getOperationTimeoutSeconds() {
+  return _config.getOperationTimeoutSeconds();
+}
+
+void ClientConfiguration::setOperationTimeoutSeconds(int timeout) {
+  _config.setOperationTimeoutSeconds(timeout);
+}
+
+int ClientConfiguration::getIOThreads() {
+  return _config.getIOThreads();
+}
+
+void ClientConfiguration::setIOThreads(int threads) {
+  _config.setIOThreads(threads);
+}
+
+int ClientConfiguration::getMessageListenerThreads() {
+  return _config.getMessageListenerThreads();
+}
+
+void ClientConfiguration::setMessageListenerThreads(int threads) {
+  _config.setMessageListenerThreads(threads);
+}
+
+int ClientConfiguration::getConcurrentLookupRequest() {
+  return _config.getConcurrentLookupRequest();
+}
+
+void ClientConfiguration::setConcurrentLookupRequest(int n) {
+  _config.setConcurrentLookupRequest(n);
+}
+
+std::string ClientConfiguration::getLogConfFilePath() {
+  return _config.getLogConfFilePath();
+}
+
+void ClientConfiguration::setLogConfFilePath(const std::string& path) {
+  _config.setLogConfFilePath(path);
+}
+
+bool ClientConfiguration::isUseTls() {
+  return _config.isUseTls();
+}
+
+void ClientConfiguration::setUseTls(bool enable) {
+  _config.setUseTls(enable);
+}
+
+std::string ClientConfiguration::getTlsTrustCertsFilePath() {
+  return _config.getTlsTrustCertsFilePath();
+}
+
+void ClientConfiguration::setTlsTrustCertsFilePath(const std::string& path) {
+  _config.setTlsTrustCertsFilePath(path);
+}
+
+bool ClientConfiguration::isTlsAllowInsecureConnection() {
+  return _config.isTlsAllowInsecureConnection();
+}
+
+void ClientConfiguration::setTlsAllowInsecureConnection(bool enable) {
+  _config.setTlsAllowInsecureConnection(enable);
+}
+
+bool ClientConfiguration::isValidateHostName() {
+  return _config.isValidateHostName();
+}
+
+void ClientConfiguration::setValidateHostName(bool enable) {
+  _config.setValidateHostName(enable);
+}
+
+Client::Client(Rice::String service_url, const ClientConfiguration& config) : _client(service_url.str(), config._config) {
 }
 
 typedef struct {
@@ -85,24 +164,24 @@ void bind_client(Module& module) {
 
   define_class_under<pulsar_rb::ClientConfiguration>(module, "ClientConfiguration")
     .define_constructor(Constructor<pulsar_rb::ClientConfiguration>())
-    // TODO .define_method("authentication=", &ClientConfiguration_setAuthentication)
-    .define_method("operation_timeout_seconds", &ClientConfiguration::getOperationTimeoutSeconds)
-    .define_method("operation_timeout_seconds=", &ClientConfiguration::setOperationTimeoutSeconds)
-    .define_method("io_threads", &ClientConfiguration::getIOThreads)
-    .define_method("io_threads=", &ClientConfiguration::setIOThreads)
-    .define_method("message_listener_threads", &ClientConfiguration::getMessageListenerThreads)
-    .define_method("message_listener_threads=", &ClientConfiguration::setMessageListenerThreads)
-    .define_method("concurrent_lookup_requests", &ClientConfiguration::getConcurrentLookupRequest)
-    .define_method("concurrent_lookup_requests=", &ClientConfiguration::setConcurrentLookupRequest)
-    .define_method("log_conf_file_path", &ClientConfiguration::getLogConfFilePath)
-    .define_method("log_conf_file_path=", &ClientConfiguration::setLogConfFilePath)
-    .define_method("use_tls?", &ClientConfiguration::isUseTls)
-    .define_method("use_tls=", &ClientConfiguration::setUseTls)
-    .define_method("tls_trust_certs_file_path", &ClientConfiguration::getTlsTrustCertsFilePath)
-    .define_method("tls_trust_certs_file_path=", &ClientConfiguration::setTlsTrustCertsFilePath)
-    .define_method("tls_allow_insecure_connection?", &ClientConfiguration::isTlsAllowInsecureConnection)
-    .define_method("tls_allow_insecure_connection=", &ClientConfiguration::setTlsAllowInsecureConnection)
-    .define_method("tls_validate_hostname?", &ClientConfiguration::isValidateHostName)
-    .define_method("tls_validate_hostname=", &ClientConfiguration::setValidateHostName)
+    .define_method("authentication_token=", &pulsar_rb::ClientConfiguration::setAuthFromToken)
+    .define_method("operation_timeout_seconds", &pulsar_rb::ClientConfiguration::getOperationTimeoutSeconds)
+    .define_method("operation_timeout_seconds=", &pulsar_rb::ClientConfiguration::setOperationTimeoutSeconds)
+    .define_method("io_threads", &pulsar_rb::ClientConfiguration::getIOThreads)
+    .define_method("io_threads=", &pulsar_rb::ClientConfiguration::setIOThreads)
+    .define_method("message_listener_threads", &pulsar_rb::ClientConfiguration::getMessageListenerThreads)
+    .define_method("message_listener_threads=", &pulsar_rb::ClientConfiguration::setMessageListenerThreads)
+    .define_method("concurrent_lookup_requests", &pulsar_rb::ClientConfiguration::getConcurrentLookupRequest)
+    .define_method("concurrent_lookup_requests=", &pulsar_rb::ClientConfiguration::setConcurrentLookupRequest)
+    .define_method("log_conf_file_path", &pulsar_rb::ClientConfiguration::getLogConfFilePath)
+    .define_method("log_conf_file_path=", &pulsar_rb::ClientConfiguration::setLogConfFilePath)
+    .define_method("use_tls?", &pulsar_rb::ClientConfiguration::isUseTls)
+    .define_method("use_tls=", &pulsar_rb::ClientConfiguration::setUseTls)
+    .define_method("tls_trust_certs_file_path", &pulsar_rb::ClientConfiguration::getTlsTrustCertsFilePath)
+    .define_method("tls_trust_certs_file_path=", &pulsar_rb::ClientConfiguration::setTlsTrustCertsFilePath)
+    .define_method("tls_allow_insecure_connection?", &pulsar_rb::ClientConfiguration::isTlsAllowInsecureConnection)
+    .define_method("tls_allow_insecure_connection=", &pulsar_rb::ClientConfiguration::setTlsAllowInsecureConnection)
+    .define_method("tls_validate_hostname?", &pulsar_rb::ClientConfiguration::isValidateHostName)
+    .define_method("tls_validate_hostname=", &pulsar_rb::ClientConfiguration::setValidateHostName)
     ;
 }

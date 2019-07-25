@@ -10,9 +10,33 @@
 #include "consumer.hpp"
 
 namespace pulsar_rb {
-  // direct typedef instead of wrapping because implementations don't need any
-  // wrapping. but still re-namespaced for consistency
-  typedef pulsar::ClientConfiguration ClientConfiguration;
+  class ClientConfiguration {
+  public:
+    pulsar::ClientConfiguration _config;
+    ClientConfiguration();
+
+    void setAuthFromToken(const std::string &token);
+    int getOperationTimeoutSeconds();
+    void setOperationTimeoutSeconds(int timeout);
+    int getIOThreads();
+    void setIOThreads(int threads);
+    int getMessageListenerThreads();
+    void setMessageListenerThreads(int threads);
+    int getConcurrentLookupRequest();
+    void setConcurrentLookupRequest(int n);
+    std::string getLogConfFilePath();
+    void setLogConfFilePath(const std::string& path);
+    bool isUseTls();
+    void setUseTls(bool enable);
+    std::string getTlsTrustCertsFilePath();
+    void setTlsTrustCertsFilePath(const std::string& path);
+    bool isTlsAllowInsecureConnection();
+    void setTlsAllowInsecureConnection(bool enable);
+    bool isValidateHostName();
+    void setValidateHostName(bool enable);
+
+    typedef Rice::Data_Object<ClientConfiguration> ptr;
+  };
 
   class Client {
   public:
