@@ -1,3 +1,3 @@
 require 'mkmf-rice'
 $LOCAL_LIBS << "-lpulsar"
-create_makefile('bindings')
+create_makefile('pulsar/bindings')
