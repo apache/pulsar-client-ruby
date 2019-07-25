@@ -21,7 +21,7 @@ require 'pulsar/bindings'
 
 module Pulsar
   class Consumer
-    def listen(message)
+    def listen
       loop do
         msg = receive
         yield msg.data
