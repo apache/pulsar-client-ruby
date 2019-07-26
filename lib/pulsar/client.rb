@@ -19,6 +19,7 @@
 
 require 'pulsar/client/version'
 require 'pulsar/bindings'
+require 'pulsar/client_configuration'
 require 'pulsar/consumer'
 require 'pulsar/producer'
 
@@ -26,7 +27,7 @@ module Pulsar
   class Client
     module RubySideTweaks
       def initialize(service_url, config=nil)
-        config ||= Pulsar::ClientConfiguration.new
+        config = Pulsar::ClientConfiguration.from(config)
         super(service_url, config)
       end
 

@@ -21,12 +21,31 @@ require 'pulsar/bindings'
 
 module Pulsar
   class Consumer
+    class ListenerToken
+      def initialize
+        @active = true
+      end
+
+      def finish
+        @active = false
+      end
+
+      def active?
+        @active
+      end
+    end
+
     def listen
-      loop do
+      listener = ListenerToken.new
+      while listener.active?
         msg = receive
-        yield msg.data
+        yield msg.data, msg.message_id, lambda { listener.finish }
         acknowledge(msg)
       end
+    end
+
+    def listen_in_thread
+      Thread.new { listen }
     end
   end
 end

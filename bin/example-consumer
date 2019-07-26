@@ -4,14 +4,16 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-service_url = ARGV.shift
+client = Pulsar::Client.new(ENV['PULSAR_BROKER_URI'], {
+  use_tls: true,
+  tls_allow_insecure_connection: true,
+  tls_validate_hostname: false,
+  authentication_token: ENV['PULSAR_AUTH_TOKEN']
+})
 
-client = Pulsar::Client.new(service_url)
-consumer = client.subscribe('example-topic', 'example-consumer')
-loop do
-  msg = consumer.receive
-  puts "Received message '#{msg.data}' id='#{msg.message_id}'"
-  consumer.acknowledge(msg)
-  break if msg.data == "exit"
+consumer = client.subscribe('persistent://dnd/demigorgon/another-example-topic', 'example-consumer')
+consumer.listen do |message, id, finish|
+  puts "Received message '#{message}' [id: #{id}]"
+  finish.call if message == "exit"
 end
 client.close

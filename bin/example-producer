@@ -4,14 +4,17 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-service_url = ARGV.shift
+client = Pulsar::Client.new(ENV['PULSAR_BROKER_URI'], {
+  use_tls: true,
+  tls_allow_insecure_connection: true,
+  tls_validate_hostname: false,
+  authentication_token: ENV['PULSAR_AUTH_TOKEN']
+})
 
-client = Pulsar::Client.new(service_url)
-producer = client.create_producer('example-topic')
+producer = client.create_producer('persistent://dnd/demigorgon/another-example-topic')
 while data = gets
   data.chomp!
-  break if data == "exit"
   producer.send(data)
+  break if data == "exit"
 end
-producer.send("exit")
 client.close
