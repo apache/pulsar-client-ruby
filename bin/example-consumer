@@ -4,14 +4,8 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-client = Pulsar::Client.new(ENV['PULSAR_BROKER_URI'], {
-  use_tls: true,
-  tls_allow_insecure_connection: true,
-  tls_validate_hostname: false,
-  authentication_token: ENV['PULSAR_AUTH_TOKEN']
-})
-
-consumer = client.subscribe('persistent://dnd/demigorgon/another-example-topic', 'example-consumer')
+client = Pulsar::Client.from_environment
+consumer = client.subscribe('persistent://dnd/demigorgon/example-topic', 'example-consumer')
 consumer.listen do |message, id, finish|
   puts "Received message '#{message}' [id: #{id}]"
   finish.call if message == "exit"

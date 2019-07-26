@@ -43,5 +43,11 @@ module Pulsar
     end
 
     prepend RubySideTweaks
+
+    def self.from_environment(config={})
+      broker_uri = config[:broker_uri] || ENV['PULSAR_BROKER_URI']
+      config = Pulsar::ClientConfiguration.from_environment(config)
+      new(broker_uri, config)
+    end
   end
 end

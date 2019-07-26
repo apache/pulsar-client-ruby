@@ -30,6 +30,20 @@ module Pulsar
       end
     end
 
+    def self.from_environment(config={})
+      env_config = {}
+      if ENV.key?('PULSAR_CERT_PATH')
+        env_config[:use_tls] = true
+        env_config[:tls_allow_insecure_connection] = false
+        env_config[:tls_validate_hostname] = false
+        env_config[:tls_trust_certs_file_path] = ENV['PULSAR_CERT_PATH']
+      end
+      if ENV.key?('PULSAR_AUTH_TOKEN')
+        env_config[:authentication_token] = ENV['PULSAR_AUTH_TOKEN']
+      end
+      self.from(env_config.merge(config))
+    end
+
     module RubySideTweaks
       def initialize(config={})
         super()
