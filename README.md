@@ -16,9 +16,14 @@ Or install it yourself as:
 
     $ gem install pulsar-client
 
+Note, you will need libpulsar (for linking) and libpulsar-dev (for C++
+client header files, for compiling) installed first.
+
 ## Usage
 
 TBD
+
+(see TODO.md)
 
 ## Development
 
