@@ -36,14 +36,9 @@ void Consumer::acknowledge(const Message& message) {
   _consumer.acknowledgeAsync(message._msg, nullptr);
 }
 
-/* TODO [with future libpulsar version]
- * this is not yet available in libpulsar v2.3.2
-
 void Consumer::negative_acknowledge(const Message& message) {
   _consumer.negativeAcknowledge(message._msg);
 }
-
-*/
 
 }
 
@@ -54,8 +49,7 @@ void bind_consumer(Module &module) {
     .define_constructor(Constructor<pulsar_rb::Consumer>())
     .define_method("receive", &pulsar_rb::Consumer::receive)
     .define_method("acknowledge", &pulsar_rb::Consumer::acknowledge)
-    // TODO [with future libpulsar version]
-    //.define_method("negative_acknowledge", &pulsar_rb::Consumer::negative_acknowledge)
+    .define_method("negative_acknowledge", &pulsar_rb::Consumer::negative_acknowledge)
     ;
 
   define_class_under<pulsar_rb::ConsumerConfiguration>(module, "ConsumerConfiguration")
@@ -73,9 +67,8 @@ void bind_consumer(Module &module) {
     .define_method("consumer_name=", &ConsumerConfiguration::setConsumerName)
     .define_method("unacked_messages_timeout_ms", &ConsumerConfiguration::getUnAckedMessagesTimeoutMs)
     .define_method("unacked_messages_timeout_ms=", &ConsumerConfiguration::setUnAckedMessagesTimeoutMs)
-    // TODO [with future libpulsar version]
-    // .define_method("negative_ack_redelivery_delay_ms", &ConsumerConfiguration::getNegativeAckRedeliveryDelayMs)
-    // .define_method("negative_ack_redelivery_delay_ms=", &ConsumerConfiguration::setNegativeAckRedeliveryDelayMs)
+    .define_method("negative_ack_redelivery_delay_ms", &ConsumerConfiguration::getNegativeAckRedeliveryDelayMs)
+    .define_method("negative_ack_redelivery_delay_ms=", &ConsumerConfiguration::setNegativeAckRedeliveryDelayMs)
     .define_method("broker_consumer_stats_cache_time_ms", &ConsumerConfiguration::getBrokerConsumerStatsCacheTimeInMs)
     .define_method("broker_consumer_stats_cache_time_ms=", &ConsumerConfiguration::setBrokerConsumerStatsCacheTimeInMs)
     .define_method("pattern_auto_discovery_period", &ConsumerConfiguration::getPatternAutoDiscoveryPeriod)

@@ -22,4 +22,3 @@ code (e.g. `ClientConfiguration#authentication_token=` and
 # Code TODOs
 
 * `producer.schema`
-* `consumer.negative_acknowledge`
