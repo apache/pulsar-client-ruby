@@ -5,7 +5,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'pulsar-client'
+gem "pulsar-client", "~> 2.4.1.pre"
 ```
 
 And then execute:
@@ -14,12 +14,16 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install pulsar-client
+    $ gem install pulsar-client --pre
 
-Note, you will need libpulsar (for linking) and libpulsar-dev (for C++
-client header files, for compiling) installed first. For both, the Gem
-currently targets version 2.4.1. If your libpulsar is older, it will
+Note #1: You will need libpulsar (for linking) and libpulsar-dev (for
+C++ client header files, for compiling) installed first. For both, the
+Gem currently targets version 2.4.1. If your libpulsar is older, it will
 fail to compile. If it is newer, it _might_ compile is not guaranteed.
+
+Note #2: This is a pre-release version of this Gem. You will need the
+`--pre` flag to `gem install` to install it manually, and must include
+the `.pre` suffix in the Gemfile to install it via Bundler.
 
 ## Usage
 

@@ -12,3 +12,4 @@
 
 # build artifacts
 lib/pulsar/bindings.bundle
+*.gem
