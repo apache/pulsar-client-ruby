@@ -23,3 +23,4 @@
 
 * Jacob Fugal
 * Matteo Merli
+* JD Harrington

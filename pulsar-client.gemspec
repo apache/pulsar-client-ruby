@@ -5,12 +5,13 @@ require "pulsar/client/version"
 Gem::Specification.new do |spec|
   spec.name          = "pulsar-client"
   spec.version       = Pulsar::Client::VERSION
-  spec.date          = "2019-05-30"
+  spec.date          = "2019-10-03"
   spec.summary       = "Apache Pulsar Ruby Client"
   spec.description   = "Apache Pulsar Ruby Client"
   spec.authors       = ["Jacob Fugal"]
   spec.email         = ["lukfugl@gmail.com"]
-  spec.homepage      = "https://github.com/apache/pulsar-client-ruby"
+  # once merged upstream to apache, we'll rename the homepage
+  spec.homepage      = "https://github.com/instructure/pulsar-client-ruby"
   spec.license       = "Apache License 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
