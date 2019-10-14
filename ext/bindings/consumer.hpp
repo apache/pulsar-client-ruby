@@ -14,7 +14,7 @@ namespace pulsar_rb {
     Consumer() {};
     Consumer(const pulsar::Consumer& consumer) : _consumer(consumer) {}
 
-    Message::ptr receive();
+    Message::ptr receive(unsigned int timeout_ms=0);
     void acknowledge(const Message& message);
     void negative_acknowledge(const Message& message);
 
