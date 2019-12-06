@@ -34,6 +34,11 @@ module Pulsar
     }
 
     module RubySideTweaks
+      def initialize(config={})
+        super()
+        self.consumer_type = config.consumer_type if config.has?(:consumer_type)
+      end
+
       def consumer_type
         enum_value = super
         CONSUMER_TYPES.invert[enum_value]

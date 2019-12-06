@@ -37,8 +37,10 @@ module Pulsar
         super(topic, config)
       end
 
-      def subscribe(topic, subscription_name, config=nil)
-        config ||= Pulsar::ConsumerConfiguration.new
+      def subscribe(topic, subscription_name, config={})
+        unless config.is_a?(Pulsar::ConsumerConfiguration)
+          config = Pulsar::ConsumerConfiguration.new(config)
+        end
         super(topic, subscription_name, config)
       end
     end
