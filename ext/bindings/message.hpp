@@ -13,8 +13,21 @@ namespace pulsar_rb {
     MessageId(const pulsar::MessageId& msgId) : _msgId(msgId) {};
 
     Rice::String toString();
+    Rice::String serialize();
 
     typedef Rice::Data_Object<MessageId> ptr;
+
+    static MessageId::ptr deserialize(const Rice::String& serialized) {
+      return MessageId::ptr(new MessageId(pulsar::MessageId::deserialize(serialized.str())));
+    }
+
+    static MessageId::ptr earliest() {
+      return MessageId::ptr(new MessageId(pulsar::MessageId::earliest()));
+    }
+
+    static MessageId::ptr latest() {
+      return MessageId::ptr(new MessageId(pulsar::MessageId::latest()));
+    }
   };
 
   class Message {

@@ -135,6 +135,28 @@ Consumer::ptr Client::subscribe(Rice::String topic, Rice::String subscriptionNam
 
 typedef struct {
   pulsar::Client& client;
+  const Rice::String& topic;
+  const pulsar::MessageId& startMessageId;
+  const pulsar::ReaderConfiguration& config;
+  pulsar::Reader reader;
+  pulsar::Result result;
+} client_create_reader_task;
+
+void* client_create_reader_worker(void* taskPtr) {
+  client_create_reader_task& task = *(client_create_reader_task*)taskPtr;
+  task.result = task.client.createReader(task.topic.str(), task.startMessageId, task.config, task.reader);
+  return nullptr;
+}
+
+Reader::ptr Client::create_reader(Rice::String topic, const MessageId& startMessageId, const ReaderConfiguration& config) {
+  client_create_reader_task task = { _client, topic, startMessageId._msgId, config };
+  rb_thread_call_without_gvl(&client_create_reader_worker, &task, RUBY_UBF_IO, nullptr);
+  CheckResult(task.result);
+  return Reader::ptr(new Reader(task.reader));
+}
+
+typedef struct {
+  pulsar::Client& client;
   pulsar::Result result;
 } client_close_task;
 
@@ -159,6 +181,7 @@ void bind_client(Module& module) {
     .define_constructor(Constructor<pulsar_rb::Client, const std::string&, const pulsar_rb::ClientConfiguration&>())
     .define_method("create_producer", &pulsar_rb::Client::create_producer)
     .define_method("subscribe", &pulsar_rb::Client::subscribe)
+    .define_method("create_reader", &pulsar_rb::Client::create_reader)
     .define_method("close", &pulsar_rb::Client::close)
     ;
 

@@ -3,6 +3,7 @@
 #include "message.hpp"
 #include "producer.hpp"
 #include "consumer.hpp"
+#include "reader.hpp"
 #include "client.hpp"
 #include "util.hpp"
 
@@ -16,5 +17,6 @@ void Init_bindings()
   bind_message(rb_mPulsar);
   bind_producer(rb_mPulsar);
   bind_consumer(rb_mPulsar);
+  bind_reader(rb_mPulsar);
   bind_client(rb_mPulsar);
 }

@@ -12,6 +12,12 @@ Rice::String MessageId::toString() {
   return Rice::String(ss.str());
 }
 
+Rice::String MessageId::serialize() {
+  std::string serialized;
+  _msgId.serialize(serialized);
+  return Rice::String(serialized);
+}
+
 Message::Message(const std::string& data) {
   pulsar::MessageBuilder mb;
   mb.setContent(data);
@@ -36,6 +42,10 @@ void bind_message(Module& module) {
   define_class_under<pulsar_rb::MessageId>(module, "MessageId")
     .define_constructor(Constructor<pulsar_rb::MessageId, const pulsar::MessageId&>())
     .define_method("to_s", &pulsar_rb::MessageId::toString)
+    .define_method("serialize", &pulsar_rb::MessageId::serialize)
+    .define_singleton_method("deserialize", &pulsar_rb::MessageId::deserialize)
+    .define_singleton_method("earliest", &pulsar_rb::MessageId::earliest)
+    .define_singleton_method("latest", &pulsar_rb::MessageId::latest)
     ;
 
   define_class_under<pulsar_rb::Message>(module, "Message")

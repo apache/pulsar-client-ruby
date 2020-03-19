@@ -8,6 +8,7 @@
 
 #include "producer.hpp"
 #include "consumer.hpp"
+#include "reader.hpp"
 
 namespace pulsar_rb {
   class ClientConfiguration {
@@ -45,6 +46,8 @@ namespace pulsar_rb {
 
     Producer::ptr create_producer(Rice::String topic, const ProducerConfiguration& config);
     Consumer::ptr subscribe(Rice::String topic, Rice::String subscriptionName, const ConsumerConfiguration& config);
+    Reader::ptr create_reader(Rice::String topic, const MessageId& startMessageId, const ReaderConfiguration& config);
+
     void close();
 
     typedef Rice::Data_Object<Client> ptr;

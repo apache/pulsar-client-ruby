@@ -23,6 +23,7 @@ require 'pulsar/client_configuration'
 require 'pulsar/consumer'
 require 'pulsar/consumer_configuration'
 require 'pulsar/producer'
+require 'pulsar/reader_configuration'
 
 module Pulsar
   class Client
@@ -42,6 +43,13 @@ module Pulsar
           config = Pulsar::ConsumerConfiguration.new(config)
         end
         super(topic, subscription_name, config)
+      end
+
+      def create_reader(topic, start_message_id, config={})
+        unless config.is_a?(Pulsar::ReaderConfiguration)
+          config = Pulsar::ReaderConfiguration.new(config)
+        end
+        super(topic, start_message_id, config)
       end
     end
 
