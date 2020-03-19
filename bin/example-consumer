@@ -23,7 +23,7 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-unless ARGV.size >= 1 && ARGV.size <= 2 && !Pulsar::Client.sufficient_environment?
+unless ARGV.size >= 1 && ARGV.size <= 2 && Pulsar::Client.sufficient_environment?
   puts "Usage: #{__FILE__} <topic> [consumer-name]"
   puts
   puts "If not specified, the consumer name defaults to 'example-consumer'."

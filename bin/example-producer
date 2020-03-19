@@ -23,7 +23,7 @@ $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
 require "pulsar/client"
 
-unless ARGV.size == 1 && !Pulsar::Client.sufficient_environment?
+unless ARGV.size == 1 && Pulsar::Client.sufficient_environment?
   puts "Usage: #{__FILE__} <topic>"
   puts
   puts "Additionally, the PULSAR_BROKER_URI environment variable must be set. Optional"
@@ -32,7 +32,7 @@ unless ARGV.size == 1 && !Pulsar::Client.sufficient_environment?
   exit 1
 end
 
-topic = ARGV[0]
+topic = ARGV.shift
 client = Pulsar::Client.from_environment
 producer = client.create_producer(topic)
 while data = gets
