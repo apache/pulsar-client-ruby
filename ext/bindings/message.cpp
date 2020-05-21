@@ -30,6 +30,8 @@ Message::Message(const std::string& data, Rice::Object arg = Rice::Object()) {
         if (value.rb_type() != T_NIL) {
           mb.setProperties(from_ruby<pulsar::StringMap>(value));
         }
+      } else if (key == "partition_key") {
+        mb.setPartitionKey(Rice::Object(it->value).to_s().str());
       } else {
         throw Rice::Exception(rb_eArgError, "Unknown keyword argument: %s", key.c_str());
       }
@@ -53,6 +55,10 @@ Rice::Hash Message::getProperties() {
   return to_ruby(_msg.getProperties());
 }
 
+Rice::String Message::getPartitionKey() {
+  return to_ruby(_msg.getPartitionKey());
+}
+
 }
 
 using namespace Rice;
@@ -70,5 +76,6 @@ void bind_message(Module& module) {
     .define_method("data", &pulsar_rb::Message::getData)
     .define_method("message_id", &pulsar_rb::Message::getMessageId)
     .define_method("properties", &pulsar_rb::Message::getProperties)
+    .define_method("partition_key", &pulsar_rb::Message::getPartitionKey)
     ;
 }
