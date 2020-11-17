@@ -14,6 +14,11 @@ typedef struct {
   pulsar::Result result;
 } producer_send_task;
 
+typedef struct {
+  pulsar::Producer& producer;
+  pulsar::Result result;
+} producer_close_task;
+
 void* producer_send_worker(void* taskPtr) {
   producer_send_task& task = *(producer_send_task*)taskPtr;
   task.result = task.producer.send(task.message);
@@ -26,6 +31,18 @@ void Producer::send(const Message& message) {
   CheckResult(task.result);
 }
 
+void* producer_close_worker(void* taskPtr) {
+  producer_close_task& task = *(producer_close_task*)taskPtr;
+  task.result = task.producer.close();
+  return nullptr;
+}
+
+void Producer::close() {
+  producer_close_task task = { _producer };
+  rb_thread_call_without_gvl(&producer_close_worker, &task, RUBY_UBF_IO, nullptr);
+  CheckResult(task.result);
+}
+
 }
 
 using namespace Rice;
@@ -34,6 +51,7 @@ void bind_producer(Module& module) {
   define_class_under<pulsar_rb::Producer>(module, "Producer")
     .define_constructor(Constructor<pulsar_rb::Producer>())
     .define_method("send", &pulsar_rb::Producer::send)
+    .define_method("close", &pulsar_rb::Producer::close)
     ;
 
   define_class_under<pulsar_rb::ProducerConfiguration>(module, "ProducerConfiguration")
