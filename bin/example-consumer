@@ -28,9 +28,12 @@ unless ARGV.size >= 1 && ARGV.size <= 2 && Pulsar::Client.sufficient_environment
   puts
   puts "If not specified, the consumer name defaults to 'example-consumer'."
   puts
-  puts "Additionally, the PULSAR_BROKER_URI environment variable must be set. Optional"
-  puts "PULSAR_CERT_PATH and PULSAR_AUTH_TOKEN environment variables are also"
-  puts "recognized."
+  puts "If set, PULSAR_CLIENT_CONF is loaded and used as a configuration."
+  puts "Broker URI, TLS settings and the authorization token to use is loaded"
+  puts "from this file."
+  puts "If this variable is not present, the PULSAR_BROKER_URI environment variable"
+  puts "must be set. In this case PULSAR_CERT_PATH and PULSAR_AUTH_TOKEN environment"
+  puts "variables are also recognized."
   exit 1
 end
 
