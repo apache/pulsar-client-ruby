@@ -81,9 +81,14 @@ module Pulsar
       if (pulsar_config['authPlugin'].eql? AUTH_TOKEN_PLUGIN_NAME) &&
           pulsar_config['authParams'].start_with?(FILE_URL_PREFIX)
         # read the first line from the token file
-        token = File.readlines(pulsar_config['authParams'].gsub(FILE_URL_PREFIX, ''))[0]
-        # store the token to the config
-        client_config[:authentication_token] = token
+        token_file = pulsar_config['authParams'].gsub(FILE_URL_PREFIX, '')
+        begin
+          token_file_lines = File.readlines(token_file)
+          # store the token to the config
+          client_config[:authentication_token] = token_file_lines[0]
+        rescue Errno::ENOENT => e
+          warn("Could not load token file '#{token_file}'. Exception was #{e}.")
+        end
       end
       # If we have a broker service URI, use it
       client_config[:broker_uri] = pulsar_config['brokerServiceUrl'] if pulsar_config.has_key? 'brokerServiceUrl'
@@ -92,19 +97,17 @@ module Pulsar
 
     # read Pulsar client configuration as a Hashmap from a client configuration file
     def self.read_config(pulsar_config_file)
-      result = {}
+      result = []
       begin
         config_file_content = File.readlines(pulsar_config_file)
-        config_key_values = config_file_content.map do |line|
+        result = config_file_content.map do |line|
           key_value = line.split(CLIENT_CONF_KEY_VALUE_SEPARATOR, 2)
           [key_value[0], key_value[1].strip]
         end
-        config_key_values.to_h
-        result = config_key_values
       rescue Errno::ENOENT => e
         warn("Could not load client config file '#{pulsar_config_file}'. Exception was #{e}.")
       end
-      return result
+      return result.to_h
     end
 
     module RubySideTweaks
