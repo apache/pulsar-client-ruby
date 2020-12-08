@@ -34,21 +34,23 @@ module Pulsar
       end
     end
 
-    def self.from_environment(config={})
-      env_config = {}
-      if ENV.key?('PULSAR_CERT_PATH')
-        env_config[:use_tls] = true
-        env_config[:tls_allow_insecure_connection] = false
-        env_config[:tls_validate_hostname] = false
-        env_config[:tls_trust_certs_file_path] = ENV['PULSAR_CERT_PATH']
+    # Creates a client configuration from a custom and environment configuration
+    # (the environment configuration defaults to OS's ENV)
+    def self.from_environment(config={}, environment=ENV.to_h)
+      environment_config = {}
+      if environment.has_key?('PULSAR_CERT_PATH')
+        environment_config[:use_tls] = true
+        environment_config[:tls_allow_insecure_connection] = false
+        environment_config[:tls_validate_hostname] = false
+        environment_config[:tls_trust_certs_file_path] = environment['PULSAR_CERT_PATH']
       end
-      if ENV.key?('PULSAR_AUTH_TOKEN')
-        env_config[:authentication_token] = ENV['PULSAR_AUTH_TOKEN']
+      if environment.has_key?('PULSAR_AUTH_TOKEN')
+        environment_config[:authentication_token] = environment['PULSAR_AUTH_TOKEN']
       end
-      if ENV.key?('PULSAR_CLIENT_CONF')
-        env_config.merge!(read_from_client_conf(ENV['PULSAR_CLIENT_CONF']))
+      if environment.has_key?('PULSAR_CLIENT_CONF')
+        environment_config.merge!(read_from_client_conf(environment['PULSAR_CLIENT_CONF']))
       end
-      self.from(env_config.merge(config))
+      self.from(environment_config.merge(config))
     end
 
     # Load configuration from PULSAR_CLIENT_CONF
