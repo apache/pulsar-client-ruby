@@ -27,6 +27,8 @@ namespace pulsar_rb {
     Rice::String getData();
     MessageId::ptr getMessageId();
     Rice::Hash getProperties();
+    Rice::String getPartitionKey();
+    Rice::String getOrderingKey();
 
     typedef Rice::Data_Object<Message> ptr;
   };

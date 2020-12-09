@@ -60,6 +60,50 @@ RSpec.describe Pulsar::Message do
       end
     end
 
+    describe "partition_key" do
+      it "defaults to blank string" do
+        m = described_class.new("payload")
+        expect(m.partition_key).to eq("")
+      end
+
+      it "accepts partition key" do
+        m = described_class.new("payload", partition_key: "foo")
+        expect(m.partition_key).to eq("foo")
+      end
+
+      it "accepts nil key" do
+        m = described_class.new("payload", partition_key: nil)
+        expect(m.partition_key).to eq("")
+      end
+
+      it "stringifies partition key" do
+        m = described_class.new("payload", partition_key: :bar)
+        expect(m.partition_key).to eq("bar")
+      end
+    end
+
+    describe "ordering_key" do
+      it "defaults to blank string" do
+        m = described_class.new("payload")
+        expect(m.ordering_key).to eq("")
+      end
+
+      it "accepts ordering key" do
+        m = described_class.new("payload", ordering_key: "foo")
+        expect(m.ordering_key).to eq("foo")
+      end
+
+      it "accepts nil ordering key" do
+        m = described_class.new("payload", ordering_key: nil)
+        expect(m.ordering_key).to eq("")
+      end
+
+      it "stringifies ordering key" do
+        m = described_class.new("payload", ordering_key: ["o"])
+        expect(m.ordering_key).to eq(%(["o"]))
+      end
+    end
+
     describe "errors" do
       it "rejects second arg that is not a hash" do
         expect do

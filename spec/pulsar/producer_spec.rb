@@ -52,6 +52,8 @@ RSpec.describe Pulsar::Producer do
           ProducerTest.new.send(
             "payload",
             properties: {"k" => "v"},
+            partition_key: "foo",
+            ordering_key: "mine",
           )
         }
 
@@ -61,6 +63,14 @@ RSpec.describe Pulsar::Producer do
 
         it "sets properties" do
           expect(subject.properties).to eq({"k" => "v"})
+        end
+
+        it "sets partition_key" do
+          expect(subject.partition_key).to eq("foo")
+        end
+
+        it "sets ordering_key" do
+          expect(subject.ordering_key).to eq("mine")
         end
       end
     end
