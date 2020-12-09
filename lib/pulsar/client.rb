@@ -52,8 +52,8 @@ module Pulsar
     end
 
     def self.from_environment(config={})
-      broker_uri = config[:broker_uri] || ENV['PULSAR_BROKER_URI']
       config = Pulsar::ClientConfiguration.from_environment(config)
+      broker_uri = config[:broker_uri] || ENV['PULSAR_BROKER_URI']
       new(broker_uri, config)
     end
   end

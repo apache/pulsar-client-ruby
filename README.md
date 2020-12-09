@@ -30,7 +30,9 @@ the `.pre` suffix in the Gemfile to install it via Bundler.
 Setup and basic `consumer.receive` example:
 
 ```ruby
-# have these in your shell with appropriate values
+# use a standard Pulsar client config (see https://github.com/apache/pulsar/blob/master/conf/client.conf)
+# export PULSAR_CLIENT_CONF=/path/to/your/client/conf/client_conf.conf
+# OR, if not present have these in your shell with appropriate values
 # export PULSAR_BROKER_URI=pulsar://your-pulsar-broker:6651
 # export PULSAR_CERT_PATH=/path/to/your/pulsar-ca.pem
 # export PULSAR_AUTH_TOKEN=your-auth-token
