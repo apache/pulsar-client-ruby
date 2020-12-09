@@ -43,6 +43,10 @@ void check_result_TopicTerminated();
 void check_result_CryptoError();
 void check_result_IncompatibleSchema();
 void check_result_ConsumerAssignError();
+void check_result_CumulativeAcknowledgementNotAllowedError();
+void check_result_TransactionCoordinatorNotFoundError();
+void check_result_InvalidTxnStatusError();
+void check_result_NotAllowedError();
 
 void Init_bindings()
 {
@@ -84,6 +88,10 @@ void Init_bindings()
     .define_singleton_method("check_result_CryptoError", &check_result_CryptoError)
     .define_singleton_method("check_result_IncompatibleSchema", &check_result_IncompatibleSchema)
     .define_singleton_method("check_result_ConsumerAssignError", &check_result_ConsumerAssignError)
+    .define_singleton_method("check_result_CumulativeAcknowledgementNotAllowedError", &check_result_CumulativeAcknowledgementNotAllowedError)
+    .define_singleton_method("check_result_TransactionCoordinatorNotFoundError", &check_result_TransactionCoordinatorNotFoundError)
+    .define_singleton_method("check_result_InvalidTxnStatusError", &check_result_InvalidTxnStatusError)
+    .define_singleton_method("check_result_NotAllowedError", &check_result_NotAllowedError)
     ;
 
 }
@@ -125,3 +133,7 @@ void check_result_TopicTerminated() { CheckResult(pulsar::ResultTopicTerminated)
 void check_result_CryptoError() { CheckResult(pulsar::ResultCryptoError); }
 void check_result_IncompatibleSchema() { CheckResult(pulsar::ResultIncompatibleSchema); }
 void check_result_ConsumerAssignError() { CheckResult(pulsar::ResultConsumerAssignError); }
+void check_result_CumulativeAcknowledgementNotAllowedError() { CheckResult(pulsar::ResultCumulativeAcknowledgementNotAllowedError); }
+void check_result_TransactionCoordinatorNotFoundError() { CheckResult(pulsar::ResultTransactionCoordinatorNotFoundError); }
+void check_result_InvalidTxnStatusError() { CheckResult(pulsar::ResultInvalidTxnStatusError); }
+void check_result_NotAllowedError() { CheckResult(pulsar::ResultNotAllowedError); }

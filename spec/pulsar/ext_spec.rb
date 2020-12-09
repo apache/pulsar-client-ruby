@@ -150,5 +150,17 @@ RSpec.describe "pulsar ext" do
     it "raises ConsumerAssignError" do
       expect { PulsarTestExt.check_result_ConsumerAssignError }.to raise_exception(Pulsar::Error::ConsumerAssignError)
     end
+    it "raises CumulativeAcknowledgementNotAllowedError" do
+      expect { PulsarTestExt.check_result_CumulativeAcknowledgementNotAllowedError }.to raise_exception(Pulsar::Error::CumulativeAcknowledgementNotAllowedError)
+    end
+    it "raises TransactionCoordinatorNotFoundError" do
+      expect { PulsarTestExt.check_result_TransactionCoordinatorNotFoundError }.to raise_exception(Pulsar::Error::TransactionCoordinatorNotFoundError)
+    end
+    it "raises InvalidTxnStatusError" do
+      expect { PulsarTestExt.check_result_InvalidTxnStatusError }.to raise_exception(Pulsar::Error::InvalidTxnStatusError)
+    end
+    it "raises NotAllowedError" do
+      expect { PulsarTestExt.check_result_NotAllowedError }.to raise_exception(Pulsar::Error::NotAllowedError)
+    end
   end
 end
