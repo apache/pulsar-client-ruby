@@ -2,4 +2,26 @@ sudo: false
 language: ruby
 rvm:
   - 2.4.3
-before_install: gem install bundler -v 1.16.1
+before_install:
+  - sudo apt-get update
+jobs:
+  include:
+    - stage: "Dependency install"
+      name: "Packages"
+      script:
+        - sudo apt-get -y install apt-utils automake
+    - name: "Libpulsar"
+      script:
+        - wget https://archive.apache.org/dist/pulsar/pulsar-2.7.0/DEB/apache-pulsar-client.deb
+        - wget https://archive.apache.org/dist/pulsar/pulsar-2.7.0/DEB/apache-pulsar-client-dev.deb
+        - sudo chmod 755 ./apache-pulsar-client.deb
+        - sudo chmod 755 ./apache-pulsar-client-dev.deb
+        - sudo apt-get -y install ./apache-pulsar-client.deb
+        - sudo apt-get -y install ./apache-pulsar-client-dev.deb
+    - stage: "Build"
+      script:
+        - gem install bundler -v 1.16.1
+        - bin/setup
+        - gem install rspec
+        - rake compile
+        - rake spec

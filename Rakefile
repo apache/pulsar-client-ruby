@@ -3,7 +3,7 @@ require "rake/extensiontask"
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+task :default => [:compile,:spec]
 
 Rake::ExtensionTask.new "bindings" do |ext|
   ext.lib_dir = "lib/pulsar"
