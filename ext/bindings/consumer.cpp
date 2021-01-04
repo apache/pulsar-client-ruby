@@ -16,6 +16,11 @@ typedef struct {
   pulsar::Result result;
 } consumer_receive_job;
 
+typedef struct {
+  pulsar::Consumer& consumer;
+  pulsar::Result result;
+} consumer_close_task;
+
 void* consumer_receive_nogvl(void* jobPtr) {
   consumer_receive_job& job = *(consumer_receive_job*)jobPtr;
   if (job.timeout_ms > 0) {
@@ -46,6 +51,18 @@ void Consumer::negative_acknowledge(const Message& message) {
   _consumer.negativeAcknowledge(message._msg);
 }
 
+void* consumer_close_worker(void* taskPtr) {
+  consumer_close_task& task = *(consumer_close_task*)taskPtr;
+  task.result = task.consumer.close();
+  return nullptr;
+}
+
+void Consumer::close() {
+  consumer_close_task task = { _consumer };
+  rb_thread_call_without_gvl(&consumer_close_worker, &task, RUBY_UBF_IO, nullptr);
+  CheckResult(task.result);
+}
+
 }
 
 using namespace Rice;
@@ -56,6 +73,7 @@ void bind_consumer(Module &module) {
     .define_method("receive", &pulsar_rb::Consumer::receive, (Arg("timeout_ms") = 0))
     .define_method("acknowledge", &pulsar_rb::Consumer::acknowledge)
     .define_method("negative_acknowledge", &pulsar_rb::Consumer::negative_acknowledge)
+    .define_method("close", &pulsar_rb::Consumer::close)
     ;
 
   define_enum<pulsar::ConsumerType>("ConsumerType", module)
