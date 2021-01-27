@@ -4,6 +4,7 @@
 #include <ruby/thread.h>
 
 #include "client.hpp"
+#include "logger.hpp"
 #include "util.hpp"
 
 namespace pulsar_rb {
@@ -53,6 +54,25 @@ std::string ClientConfiguration::getLogConfFilePath() {
 
 void ClientConfiguration::setLogConfFilePath(const std::string& path) {
   _config.setLogConfFilePath(path);
+}
+
+void ClientConfiguration::setSilentLogging(bool enable) {
+  // The logger can only be set once, so if it's already on we cannot disable it.
+  if (silentLogging) {
+    if (!enable) {
+      throw Rice::Exception(rb_eArgError, "silent_logging can only be set once");
+    }
+  }
+
+  if (enable) {
+    silentLogging = true;
+    std::unique_ptr<LoggerFactory> loggerFactory = SilentLoggerFactory::create();
+    _config.setLogger(loggerFactory.release());
+  }
+}
+
+bool ClientConfiguration::getSilentLogging() {
+  return silentLogging;
 }
 
 bool ClientConfiguration::isUseTls() {
@@ -175,6 +195,8 @@ void bind_client(Module& module) {
     .define_method("concurrent_lookup_requests=", &pulsar_rb::ClientConfiguration::setConcurrentLookupRequest)
     .define_method("log_conf_file_path", &pulsar_rb::ClientConfiguration::getLogConfFilePath)
     .define_method("log_conf_file_path=", &pulsar_rb::ClientConfiguration::setLogConfFilePath)
+    .define_method("silent_logging?", &pulsar_rb::ClientConfiguration::getSilentLogging)
+    .define_method("silent_logging=", &pulsar_rb::ClientConfiguration::setSilentLogging)
     .define_method("use_tls?", &pulsar_rb::ClientConfiguration::isUseTls)
     .define_method("use_tls=", &pulsar_rb::ClientConfiguration::setUseTls)
     .define_method("tls_trust_certs_file_path", &pulsar_rb::ClientConfiguration::getTlsTrustCertsFilePath)

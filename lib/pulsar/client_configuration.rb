@@ -134,6 +134,7 @@ module Pulsar
       populate_one(config, :message_listener_threads)
       populate_one(config, :concurrent_lookup_requests)
       populate_one(config, :log_conf_file_path)
+      populate_one(config, :silent_logging)
       populate_one(config, :use_tls)
       populate_one(config, :tls_trust_certs_file_path)
       populate_one(config, :tls_allow_insecure_connection)

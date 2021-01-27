@@ -13,6 +13,7 @@ namespace pulsar_rb {
   class ClientConfiguration {
   public:
     pulsar::ClientConfiguration _config;
+    bool silentLogging = false;
     ClientConfiguration();
 
     void setAuthFromToken(const std::string &token);
@@ -26,6 +27,8 @@ namespace pulsar_rb {
     void setConcurrentLookupRequest(int n);
     std::string getLogConfFilePath();
     void setLogConfFilePath(const std::string& path);
+    void setSilentLogging(bool);
+    bool getSilentLogging();
     bool isUseTls();
     void setUseTls(bool enable);
     std::string getTlsTrustCertsFilePath();
