@@ -5,7 +5,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "pulsar-client", "~> 2.4.1.pre"
+gem "pulsar-client", "~> 2.6.1.pre"
 ```
 
 And then execute:

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pulsar-client (2.4.1.pre.beta.4)
+    pulsar-client (2.6.1.pre.beta.1)
       rake-compiler (~> 1.0)
       rice (~> 2.1)
 
