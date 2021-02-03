@@ -44,6 +44,10 @@ VALUE rb_ePulsarError_TopicTerminated = Qnil;
 VALUE rb_ePulsarError_CryptoError = Qnil;
 VALUE rb_ePulsarError_IncompatibleSchema = Qnil;
 VALUE rb_ePulsarError_ConsumerAssignError = Qnil;
+VALUE rb_ePulsarError_CumulativeAcknowledgementNotAllowedError = Qnil;
+VALUE rb_ePulsarError_TransactionCoordinatorNotFoundError = Qnil;
+VALUE rb_ePulsarError_InvalidTxnStatusError = Qnil;
+VALUE rb_ePulsarError_NotAllowedError = Qnil;
 
 void bind_errors(Module &module) {
   rb_ePulsarError = rb_define_class_under(module.value(), "Error", rb_eStandardError);
@@ -83,6 +87,10 @@ void bind_errors(Module &module) {
   rb_ePulsarError_CryptoError = rb_define_class_under(rb_ePulsarError, "CryptoError", rb_ePulsarError);
   rb_ePulsarError_IncompatibleSchema = rb_define_class_under(rb_ePulsarError, "IncompatibleSchema", rb_ePulsarError);
   rb_ePulsarError_ConsumerAssignError = rb_define_class_under(rb_ePulsarError, "ConsumerAssignError", rb_ePulsarError);
+  rb_ePulsarError_CumulativeAcknowledgementNotAllowedError = rb_define_class_under(rb_ePulsarError, "CumulativeAcknowledgementNotAllowedError", rb_ePulsarError);
+  rb_ePulsarError_TransactionCoordinatorNotFoundError = rb_define_class_under(rb_ePulsarError, "TransactionCoordinatorNotFoundError", rb_ePulsarError);
+  rb_ePulsarError_InvalidTxnStatusError = rb_define_class_under(rb_ePulsarError, "InvalidTxnStatusError", rb_ePulsarError);
+  rb_ePulsarError_NotAllowedError = rb_define_class_under(rb_ePulsarError, "NotAllowedError", rb_ePulsarError);
 }
 
 void CheckResult(pulsar::Result res) {
@@ -160,7 +168,14 @@ void CheckResult(pulsar::Result res) {
         throw Exception(rb_ePulsarError_IncompatibleSchema, "Specified schema is incompatible with the topic's schema"); break;
       case pulsar::ResultConsumerAssignError:
         throw Exception(rb_ePulsarError_ConsumerAssignError, "Error when a new consumer connected but can't assign messages to this consumer"); break;
-
+      case pulsar::ResultCumulativeAcknowledgementNotAllowedError:
+        throw Exception(rb_ePulsarError_CumulativeAcknowledgementNotAllowedError, "Not allowed to call cumulativeAcknowledgement in Shared and Key_Shared subscription mode"); break;
+      case pulsar::ResultTransactionCoordinatorNotFoundError:
+        throw Exception(rb_ePulsarError_TransactionCoordinatorNotFoundError, "Transaction coordinator not found"); break;
+      case pulsar::ResultInvalidTxnStatusError:
+        throw Exception(rb_ePulsarError_InvalidTxnStatusError, "Invalid txn status error"); break;
+      case pulsar::ResultNotAllowedError:
+        throw Exception(rb_ePulsarError_NotAllowedError, "Not allowed"); break;
       default:
         throw Exception(rb_ePulsarError, "unexpected pulsar exception: %d", res);
     }
