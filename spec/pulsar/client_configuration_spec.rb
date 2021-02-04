@@ -168,6 +168,22 @@ RSpec.describe Pulsar::ClientConfiguration do
       test_config.unlink
     end
   end
+
+  describe "silent logging" do
+    it "is off by default" do
+      expect(Pulsar::ClientConfiguration.new.silent_logging?).to eq(false)
+    end
+
+    it "can be enabled" do
+      expect(Pulsar::ClientConfiguration.from({silent_logging: true}).silent_logging?).to eq(true)
+    end
+
+    it "raises when set twice" do
+      expect {
+        Pulsar::ClientConfiguration.from({silent_logging: true}).silent_logging = false
+      }.to raise_error(ArgumentError, /silent_logging can only be set once/)
+    end
+  end
 end
 
 def create_temp_config(content)
