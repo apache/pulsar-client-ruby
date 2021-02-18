@@ -17,3 +17,6 @@ lib/pulsar/bindings.bundle
 spec/pulsar/ext/bindings.bundle
 spec/pulsar/ext/bindings.o
 spec/pulsar/ext/Makefile
+
+# Intellij IDEA
+.idea/
