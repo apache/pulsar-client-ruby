@@ -41,7 +41,7 @@ module Pulsar
         unless config.is_a?(Pulsar::ConsumerConfiguration)
           config = Pulsar::ConsumerConfiguration.new(config)
         end
-        super(topic, subscription_name, config)
+        super(Array(topic), subscription_name, config)
       end
     end
 

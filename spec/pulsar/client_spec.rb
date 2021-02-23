@@ -26,7 +26,7 @@ RSpec.describe Pulsar::Client do
     let(:broker_uri) { ENV['PULSAR_BROKER_URI'] }
     let(:namespace) { ENV['PULSAR_CLIENT_RUBY_TEST_NAMESPACE'].to_s.sub(%r{^[-a-z]:/+}, '') }
     let(:configured?) { broker_uri && !namespace.empty? }
-    let(:client) { Pulsar::Client.from_environment(broker_uri: broker_uri) }
+    let(:client) { Pulsar::Client.from_environment(broker_uri: broker_uri, silent_logging: !!ENV['PULSAR_CLIENT_SILENT_LOGGING']) }
     let(:topic) { "non-persistent://#{namespace}/test#{sprintf "%06d", rand(1_000_000)}" }
     let(:producer) { client.create_producer(topic) }
     let(:subscription_name) { "#{topic}-consumer" }
@@ -46,6 +46,22 @@ RSpec.describe Pulsar::Client do
       t = Thread.new { consumer.receive(timeout_ms).data }
       client.create_producer(topic).send("single")
       expect(t.join.value).to eq("single")
+    end
+
+    it "can consume multiple topics" do
+      topics = [topic, "#{topic}.2"]
+      consumer = client.subscribe(topics, subscription_name)
+      t = Thread.new { topics.map { consumer.receive(timeout_ms).data } }
+      topics.each.with_index do |t, i|
+        client.create_producer(t).send("#{t} #{i}")
+      end
+      expect(t.join.value).to eq(topics.map.with_index { |t, i| "#{t} #{i}" })
+    end
+
+    it "errors with zero topics" do
+      expect {
+        client.subscribe([], subscription_name)
+      }.to raise_error(ArgumentError, /at least one topic/)
     end
   end
 end

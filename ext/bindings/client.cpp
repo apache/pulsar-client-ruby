@@ -6,6 +6,7 @@
 #include "client.hpp"
 #include "logger.hpp"
 #include "util.hpp"
+#include "vector.hpp"
 
 namespace pulsar_rb {
 
@@ -133,7 +134,7 @@ Producer::ptr Client::create_producer(Rice::String topic, const ProducerConfigur
 
 typedef struct {
   pulsar::Client& client;
-  const Rice::String& topic;
+  const Rice::Array& topics;
   const Rice::String& subscriptionName;
   const pulsar::ConsumerConfiguration& config;
   pulsar::Consumer consumer;
@@ -142,12 +143,27 @@ typedef struct {
 
 void* client_subscribe_worker(void* taskPtr) {
   client_subscribe_task& task = *(client_subscribe_task*)taskPtr;
-  task.result = task.client.subscribe(task.topic.str(), task.subscriptionName.str(), task.config, task.consumer);
+
+  const std::vector<std::string>& topics = from_ruby<std::vector<std::string>>(task.topics);
+  switch(topics.size()) {
+    case 0:
+      throw Rice::Exception(rb_eArgError, "Must have at least one topic");
+      break;
+    case 1: {
+      // Skip the MultiTopicsConsumer if there's only one.
+      task.result = task.client.subscribe(topics[0], task.subscriptionName.str(), task.config, task.consumer);
+      break;
+    }
+    default: {
+      task.result = task.client.subscribe(topics, task.subscriptionName.str(), task.config, task.consumer);
+      break;
+    }
+  }
   return nullptr;
 }
 
-Consumer::ptr Client::subscribe(Rice::String topic, Rice::String subscriptionName, const ConsumerConfiguration& config) {
-  client_subscribe_task task = { _client, topic, subscriptionName, config };
+Consumer::ptr Client::subscribe(Rice::Array topics, Rice::String subscriptionName, const ConsumerConfiguration& config) {
+  client_subscribe_task task = { _client, topics, subscriptionName, config };
   rb_thread_call_without_gvl(&client_subscribe_worker, &task, RUBY_UBF_IO, nullptr);
   CheckResult(task.result);
   return Consumer::ptr(new Consumer(task.consumer));
