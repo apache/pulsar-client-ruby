@@ -43,9 +43,12 @@ RSpec.describe Pulsar::Client do
 
     it "can consume a single topic" do
       consumer = client.subscribe(topic, subscription_name)
-      t = Thread.new { consumer.receive(timeout_ms).data }
+      t = Thread.new { consumer.receive(timeout_ms) }
       client.create_producer(topic).send("single")
-      expect(t.join.value).to eq("single")
+      message = t.join.value
+
+      expect(message.data).to eq("single")
+      expect(message.topic).to eq(topic)
     end
 
     it "can consume multiple topics" do

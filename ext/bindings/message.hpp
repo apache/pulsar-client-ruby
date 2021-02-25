@@ -21,6 +21,7 @@ namespace pulsar_rb {
   class Message {
   public:
     pulsar::Message _msg;
+    bool received = true; // received from consumer rather than built with builder
     Message(const pulsar::Message& msg) : _msg(msg) {};
     Message(const std::string& data, Rice::Object opts);
 
@@ -29,6 +30,7 @@ namespace pulsar_rb {
     Rice::Hash getProperties();
     Rice::String getPartitionKey();
     Rice::String getOrderingKey();
+    Rice::Object getTopicName();
 
     typedef Rice::Data_Object<Message> ptr;
   };

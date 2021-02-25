@@ -24,6 +24,13 @@ RSpec.describe Pulsar::Message do
       expect(m.data).to eq("payload")
     end
 
+    describe "topic" do
+      it "is nil when built rather than received" do
+        m = described_class.new("payload")
+        expect(m.topic).to be_nil
+      end
+    end
+
     describe "properties" do
       it "takes properties" do
         m = described_class.new("payload", properties: {"a" => "1", "b" => "2"})
