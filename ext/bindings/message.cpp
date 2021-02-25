@@ -41,6 +41,7 @@ Message::Message(const std::string& data, Rice::Object arg = Rice::Object()) {
   }
 
   _msg = mb.build();
+  received = false;
 }
 
 Rice::String Message::getData() {
@@ -65,6 +66,12 @@ Rice::String Message::getOrderingKey() {
   return to_ruby(_msg.getOrderingKey());
 }
 
+Rice::Object Message::getTopicName() {
+  // If the message topic hasn't been set (it gets set when received, not when
+  // built) getTopicName will try to dereference a null pointer.
+  return received ? to_ruby(_msg.getTopicName()) : Rice::Nil;
+}
+
 }
 
 using namespace Rice;
@@ -84,5 +91,6 @@ void bind_message(Module& module) {
     .define_method("properties", &pulsar_rb::Message::getProperties)
     .define_method("partition_key", &pulsar_rb::Message::getPartitionKey)
     .define_method("ordering_key", &pulsar_rb::Message::getOrderingKey)
+    .define_method("topic", &pulsar_rb::Message::getTopicName)
     ;
 }
