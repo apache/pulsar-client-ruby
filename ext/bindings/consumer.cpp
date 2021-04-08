@@ -82,6 +82,10 @@ void bind_consumer(Module &module) {
     .define_value("Failover", ConsumerFailover)
     .define_value("KeyShared", ConsumerKeyShared);
 
+  define_enum<pulsar::InitialPosition>("InitialPosition", module)
+    .define_value("Latest", InitialPositionLatest)
+    .define_value("Earliest", InitialPositionEarliest);
+
   define_class_under<pulsar_rb::ConsumerConfiguration>(module, "ConsumerConfiguration")
     .define_constructor(Constructor<pulsar_rb::ConsumerConfiguration>())
     .define_method("consumer_type", &ConsumerConfiguration::getConsumerType)

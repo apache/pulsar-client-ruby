@@ -33,6 +33,12 @@ module Pulsar
       :key_shared => Pulsar::ConsumerType::KeyShared
     }
 
+    # aligns with the pulsar::InitialPosition enum in the C++ library
+    INITIAL_POSITIONS = {
+      :latest => Pulsar::InitialPosition::Latest,
+      :earliest => Pulsar::InitialPosition::Earliest
+    }
+
     module RubySideTweaks
       def initialize(config={})
         super()
@@ -49,6 +55,21 @@ module Pulsar
           type = CONSUMER_TYPES[type]
           unless type
             raise ArgumentError, "unrecognized consumer_type"
+          end
+        end
+        super(type)
+      end
+
+      def subscription_initial_position
+        enum_value = super
+        INITIAL_POSITIONS.invert[enum_value]
+      end
+
+      def subscription_initial_position=(type)
+        unless type.is_a?(Pulsar::InitialPosition)
+          type = INITIAL_POSITIONS[type]
+          unless type
+            raise ArgumentError, "unrecognized subscription_initial_position"
           end
         end
         super(type)
