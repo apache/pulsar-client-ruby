@@ -1,0 +1,22 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# rspec failure tracking
+.rspec_status
+
+# build artifacts
+lib/pulsar/bindings.bundle
+*.gem
+
+spec/pulsar/ext/bindings.bundle
+spec/pulsar/ext/bindings.o
+spec/pulsar/ext/Makefile
+
+# Intellij IDEA
+.idea/

@@ -1,0 +1,27 @@
+dist: bionic # ubuntu 18.04
+sudo: false
+services:
+  - docker
+language: ruby
+rvm:
+  - 2.4.9 # oldest pre-install on bionic
+install:
+  - sudo apt-get -y install apt-utils automake
+  # - sudo apt-get upgrade libstdc++6
+  - wget https://archive.apache.org/dist/pulsar/pulsar-2.6.1/DEB/apache-pulsar-client.deb
+  - wget https://archive.apache.org/dist/pulsar/pulsar-2.6.1/DEB/apache-pulsar-client-dev.deb
+  - sudo apt-get -y install ./apache-pulsar-client.deb
+  - sudo apt-get -y install ./apache-pulsar-client-dev.deb
+  - gem install bundler -v 1.16.1
+  - bundle install
+before_script:
+  - docker run --name pulsar -d -p 6650:6650 -p 8080:8080 apachepulsar/pulsar:latest bin/pulsar standalone
+  - docker exec pulsar bash -c 'ready (){ (exec > /dev/tcp/$1/$2); }; i=0; while ! ready localhost 8080; do sleep 1; i=$((i+1)); [[ $i -gt 10 ]] && break; done'
+  - docker exec pulsar bin/pulsar-admin tenants create ruby-client
+  - docker exec pulsar bin/pulsar-admin namespaces create ruby-client/tests
+env:
+  global:
+    PULSAR_BROKER_URI: pulsar://localhost:6650
+    PULSAR_CLIENT_RUBY_TEST_NAMESPACE: ruby-client/tests
+script:
+  - rake
